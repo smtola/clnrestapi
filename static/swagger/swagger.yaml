@@ -20,6 +20,196 @@ components:
           type: string
         password:
           type: string
+    
+    Category:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: MongoDB ObjectId as string
+          example: "507f1f77bcf86cd799439011"
+        name:
+          type: string
+          example: "Logistics"
+        created_by:
+          type: string
+          description: User ID who created the category
+          example: "user123"
+    
+    CategoryResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Category fetching successful!"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    
+    CategorySingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Category fetched successfully!"
+        data:
+          $ref: '#/components/schemas/Category'
+    
+    CategoryCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Category created successfully!"
+        data:
+          $ref: '#/components/schemas/Category'
+    
+    CategoryUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Category updated successfully!"
+        data:
+          $ref: '#/components/schemas/Category'
+    
+    CategoryDeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Category deleted successfully!"
+    
+    CategoryErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Category not found"
+
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: MongoDB ObjectId as string
+          example: "507f1f77bcf86cd799439011"
+        key:
+          type: string
+          description: Unique product key/identifier
+          example: "rice"
+        category:
+          type: string
+          description: Product category name
+          example: "Export"
+        product:
+          type: string
+          description: Product name
+          example: "Rice"
+        caption:
+          type: string
+          description: Product caption/description
+          example: "Cambodia - France, Germany, Philippines and China"
+        image:
+          type: array
+          items:
+            type: string
+          description: Array of image URLs/paths
+          example: ["assets/image/products/rice/rice.jpg"]
+        created_by:
+          type: string
+          description: User ID who created the product
+          example: "user123"
+    
+    ProductResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Products fetched successfully!"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+    
+    ProductSingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Product fetched successfully!"
+        data:
+          $ref: '#/components/schemas/Product'
+    
+    ProductCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Product created successfully!"
+        data:
+          $ref: '#/components/schemas/Product'
+    
+    ProductUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Product updated successfully!"
+        data:
+          $ref: '#/components/schemas/Product'
+    
+    ProductDeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Product deleted successfully!"
+    
+    ProductErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Product not found"
+
     RequestQuote:
       type: object
       properties:
@@ -490,6 +680,470 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RequestQuote'
+
+  /api/v1/docs/web/categories:
+    get:
+      summary: Get all categories
+      description: Retrieve a list of all categories (protected endpoint)
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of categories retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+    
+    post:
+      summary: Create a new category
+      description: Create a new category (protected endpoint)
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Category name
+                  example: "Logistics"
+      responses:
+        '201':
+          description: Category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryCreateResponse'
+        '400':
+          description: Bad request - Category name is required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+        '409':
+          description: Conflict - Category with this name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+
+  /api/v1/docs/web/categories/{category_id}:
+    get:
+      summary: Get a category by ID
+      description: Retrieve a single category by its ID (protected endpoint)
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: category_id
+          required: true
+          schema:
+            type: string
+          description: MongoDB ObjectId of the category
+          example: "507f1f77bcf86cd799439011"
+      responses:
+        '200':
+          description: Category retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategorySingleResponse'
+        '400':
+          description: Bad request - Invalid category ID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+    
+    put:
+      summary: Update a category
+      description: Update an existing category by ID (protected endpoint)
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: category_id
+          required: true
+          schema:
+            type: string
+          description: MongoDB ObjectId of the category
+          example: "507f1f77bcf86cd799439011"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Updated category name
+                  example: "Updated Logistics"
+      responses:
+        '200':
+          description: Category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryUpdateResponse'
+        '400':
+          description: Bad request - Invalid ID format or missing name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+        '409':
+          description: Conflict - Category with this name already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+    
+    delete:
+      summary: Delete a category
+      description: Delete a category by ID (protected endpoint)
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: category_id
+          required: true
+          schema:
+            type: string
+          description: MongoDB ObjectId of the category
+          example: "507f1f77bcf86cd799439011"
+      responses:
+        '200':
+          description: Category deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDeleteResponse'
+        '400':
+          description: Bad request - Invalid category ID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryErrorResponse'
+
+  /api/v1/docs/web/products:
+    get:
+      summary: Get all products
+      description: Retrieve a list of all products with optional category filter (protected endpoint)
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: category
+          schema:
+            type: string
+          required: false
+          description: Filter products by category name
+          example: "Export"
+      responses:
+        '200':
+          description: List of products retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+    
+    post:
+      summary: Create a new product
+      description: Create a new product (protected endpoint)
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - key
+                - category
+                - product
+                - caption
+                - image
+              properties:
+                key:
+                  type: string
+                  description: Unique product key/identifier
+                  example: "rice"
+                category:
+                  type: string
+                  description: Product category name (must exist in categories)
+                  example: "Export"
+                product:
+                  type: string
+                  description: Product name
+                  example: "Rice"
+                caption:
+                  type: string
+                  description: Product caption/description
+                  example: "Cambodia - France, Germany, Philippines and China"
+                image:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of image URLs/paths
+                  example: ["assets/image/products/rice/rice.jpg"]
+      responses:
+        '201':
+          description: Product created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductCreateResponse'
+        '400':
+          description: Bad request - Missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+        '404':
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+        '409':
+          description: Conflict - Product with this key already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+
+  /api/v1/docs/web/products/{product_id}:
+    get:
+      summary: Get a product by ID
+      description: Retrieve a single product by its ID (protected endpoint)
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+          description: MongoDB ObjectId of the product
+          example: "507f1f77bcf86cd799439011"
+      responses:
+        '200':
+          description: Product retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSingleResponse'
+        '400':
+          description: Bad request - Invalid product ID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+    
+    put:
+      summary: Update a product
+      description: Update an existing product by ID (protected endpoint). All fields are optional.
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+          description: MongoDB ObjectId of the product
+          example: "507f1f77bcf86cd799439011"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                key:
+                  type: string
+                  description: Updated product key/identifier
+                  example: "rice"
+                category:
+                  type: string
+                  description: Updated product category name (must exist in categories)
+                  example: "Export"
+                product:
+                  type: string
+                  description: Updated product name
+                  example: "Rice"
+                caption:
+                  type: string
+                  description: Updated product caption/description
+                  example: "Cambodia - France, Germany, Philippines and China"
+                image:
+                  type: array
+                  items:
+                    type: string
+                  description: Updated array of image URLs/paths
+                  example: ["assets/image/products/rice/rice.jpg"]
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductUpdateResponse'
+        '400':
+          description: Bad request - Invalid ID format, missing fields, or no fields to update
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+        '404':
+          description: Product or category not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+        '409':
+          description: Conflict - Product with this key already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+    
+    delete:
+      summary: Delete a product
+      description: Delete a product by ID (protected endpoint)
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: product_id
+          required: true
+          schema:
+            type: string
+          description: MongoDB ObjectId of the product
+          example: "507f1f77bcf86cd799439011"
+      responses:
+        '200':
+          description: Product deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDeleteResponse'
+        '400':
+          description: Bad request - Invalid product ID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductErrorResponse'
 
   /api/v1/docs/seo:
     post:
