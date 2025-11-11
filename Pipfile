@@ -17,6 +17,9 @@ gunicorn = "*"
 datetime = "*"
 flask-apscheduler = "*"
 python-dotenv = "*"
+flask-cors = "*"
+requests = "*"
+user-agents = "*"
 
 [dev-packages]
 

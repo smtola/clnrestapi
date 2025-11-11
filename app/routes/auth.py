@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify
 from app.extensions import mongo
 from app.utils.jwt_utils import create_access_token
 from flask_jwt_extended import (
-    create_access_token,
     create_refresh_token,  
     jwt_required,
     get_jwt_identity,
@@ -132,6 +131,15 @@ def login():
         return jsonify({"msg": "User not found","status": False}), 404
     if not User.check_password(user_doc["password_hash"], password):
         return jsonify({"msg": "Incorrect password", "status": False}), 401
+    
+    # Check if email is verified
+    if not user_doc.get("is_verified", False):
+        return jsonify({
+            "msg": "Please verify your email before logging in. Check your email for the verification OTP.",
+            "status": False,
+            "statusCode": 403,
+            "email": user_doc.get("email")
+        }), 403
 
     # --------- Device Info ---------
     user_agent_str = request.headers.get('User-Agent', '')
@@ -174,7 +182,7 @@ def login():
     # --------- Handle OTP ---------
     requires_otp = user_doc.get("requires_otp", False)
 
-    if  requires_otp == False:
+    if requires_otp == False:
         otp_code = generate_otp()
         otp_expire = datetime.utcnow() + timedelta(minutes=5)
         mongo.db.users.update_one(
@@ -182,13 +190,13 @@ def login():
             {"$set": {"otp_code": otp_code, "otp_expire": otp_expire}}
         )
 
-    # Send OTP via email
-    if not send_otp_email(user_doc.get("email"), otp_code):
-        return jsonify({
-                        "msg": "Failed to send OTP. Please try again later.",
-                        "requiresOtp": False,
-                        "status": False
-                    }), 500                            
+        # Send OTP via email
+        if not send_otp_email(user_doc.get("email"), otp_code):
+            return jsonify({
+                "msg": "Failed to send OTP. Please try again later.",
+                "requiresOtp": False,
+                "status": False
+            }), 500
 
         return jsonify({
             "msg": "OTP required. Please check your email.",
@@ -196,6 +204,23 @@ def login():
             "username": username,
             "status": True
         }), 200
+    else:
+        # If requires_otp is True, proceed with login (OTP already handled or not needed)
+        access_token = create_access_token(
+            identity=str(user_doc["_id"]),
+            additional_claims={"role": user_doc.get("role", "user")}
+        )
+        refresh_token = create_refresh_token(identity=str(user_doc["_id"]))
+
+        resp = jsonify({
+            "msg": "Login successful",
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "user": serialize_user(user_doc),
+            "status": True
+        })
+        set_refresh_cookies(resp, refresh_token)
+        return resp, 200
 
 # ---------------- Refresh Token ----------------
 @auth_bp.route('/refresh', methods=['POST'])

@@ -29,7 +29,7 @@ def request_quote(company_name, full_name, client_email, address, tel, job, orig
             <table align="center" width="100%" style="max-width: 650px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
             <tr>
                 <td align="center" style="padding: 20px 20px 0 20px;">
-                <img src="https://cln-tan.vercel.app/assets/logo-CxDBtqyW.png" alt="Company Logo" style="max-width: 180px; height: auto; display: block;" />
+                <img src="https://clncambodia.com/logo.png" alt="Company Logo" style="max-width: 180px; height: auto; display: block;" />
                 </td>
             </tr>
             <tr>
@@ -90,7 +90,7 @@ def request_quote(company_name, full_name, client_email, address, tel, job, orig
 
             # 1. Send to agency
             msg_agency = MIMEMultipart("alternative")
-            msg_agency["From"] = company_name
+            msg_agency["From"] = formataddr((f"Customer-{client_email}"))
             msg_agency["To"] = sender_email
             msg_agency["Subject"] = subject_agency
             msg_agency.attach(MIMEText(agency_body, "html"))
@@ -98,13 +98,12 @@ def request_quote(company_name, full_name, client_email, address, tel, job, orig
 
             # 2. Send confirmation to client
             msg_client = MIMEMultipart("alternative")
-            msg_client["From"] = sender_email
+            msg_client["From"] = formataddr(("CLN CAMBODIA No-Reply", "noreply@clncambodia.com"))
             msg_client["To"] = client_email
             msg_client["Subject"] = subject_client
             msg_client.attach(MIMEText(client_body, "html"))
             server.sendmail(sender_email, client_email, msg_client.as_string())
 
-        print("✅ Quote request sent to agency and confirmation sent to client.")
         return True
 
     except Exception as e:
@@ -133,7 +132,7 @@ def contact_us(company_name, full_name, client_email, address, tel, job, origin_
                 <table align="center" width="100%" style="max-width: 650px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
                 <tr>
                     <td align="center" style="padding: 20px 20px 0 20px;">
-                    <img src="https://cln-tan.vercel.app/assets/logo-CxDBtqyW.png" alt="Company Logo" style="max-width: 180px; height: auto; display: block;" />
+                    <img src="https://clncambodia.com/logo.png" alt="Company Logo" style="max-width: 180px; height: auto; display: block;" />
                     </td>
                 </tr>
                 <tr>

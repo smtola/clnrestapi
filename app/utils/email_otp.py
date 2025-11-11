@@ -4,6 +4,7 @@ import os
 import random
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.utils import formataddr
 
 
 def generate_otp() -> str:
@@ -24,7 +25,7 @@ def send_otp_email(email: str, otp: str) -> bool:
     """
 
     # Use environment variables for security
-    sender_email = os.getenv("EMAIL_USER","tolasom.titan@gmail.com")
+    sender_email = os.getenv("EMAIL_USER", "tolasom.titan@gmail.com")
     sender_password = os.getenv("EMAIL_PASSWORD", "bapl rpih plow tzyp")
 
     subject = "Your Security Code"
@@ -36,7 +37,7 @@ def send_otp_email(email: str, otp: str) -> bool:
         <table align="center" width="100%" style="max-width: 600px; background: #ffffff; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
           <tr>
             <td align="center" style="padding: 20px 20px 0 20px;">
-              <img src="https://cln-tan.vercel.app/assets/logo-CxDBtqyW.png" alt="Company Logo" style="max-width: 180px; height: auto; display: block;" />
+              <img src="https://clncambodia.com/logo.png" alt="Company Logo" style="max-width: 180px; height: auto; display: block;" />
             </td>
           </tr>
           <tr>
@@ -60,7 +61,8 @@ def send_otp_email(email: str, otp: str) -> bool:
 
     # Create email message
     msg = MIMEMultipart("alternative")
-    msg["From"] = sender_email
+    # Apply sender profile with proper formatting - use display email in From header
+    msg["From"] = "CLN Cambodia <noreply@clncambodia.com>"
     msg["To"] = email
     msg["Subject"] = subject
     msg.attach(MIMEText(body, "html"))
@@ -71,10 +73,16 @@ def send_otp_email(email: str, otp: str) -> bool:
         
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
             server.login(sender_email, sender_password)
+            
+            # Gmail requires the envelope sender (first parameter) to match authenticated email
+            # But the From header in the message will show the display email
+            # Note: To fully send from custom domain without "via gmail.com", you need to:
+            # 1. Add "Send mail as" in Gmail settings for no-reply@clncambodia.com and verify it
+            # 2. Or use Google Workspace with domain verification
+            # 3. Or use an external SMTP service (SendGrid, Mailgun, AWS SES, etc.)
             server.sendmail(sender_email, email, msg.as_string())
-
-        print(f"✅ OTP sent to {email}")
         return True
     except Exception as e:
         print(f"❌ Error sending email to {email}: {e}")
+        print(f"💡 Tip: To send from {sender_display_email} without 'via gmail.com', add it as 'Send mail as' in Gmail settings and verify the domain.")
         return False
