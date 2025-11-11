@@ -1,0 +1,14 @@
+Flask
+flask_pymongo
+flask_jwt_extended
+flask_swagger_ui
+marshmallow
+Werkzeug
+sendgrid
+user_agents
+requests
+gunicorn
+flask_cors
+datetime
+flask_apscheduler
+python-dotenv

@@ -1,0 +1,617 @@
+openapi: 3.0.0
+info:
+  title: CLN REST API
+  version: "1.5"
+
+# ---------------- Security Schemes ----------------
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    RequestQuote:
+      type: object
+      properties:
+            msg:
+              type: string
+            data:
+              type: object
+              properties:
+                company_name:
+                  type: string
+                full_name:
+                  type: string
+                email:
+                  type: string
+                address:
+                  type: string
+                tel:
+                  type: string
+                job:
+                  type: string
+                origin_destination:
+                  type: string
+                product_name:
+                  type: string
+                weight_dimensions:
+                  type: string
+                service:
+                  type: string
+                container_size:
+                  type: string
+        
+    ResendOtp:
+      type: object
+      properties:
+        msg:
+          type: string
+          example: "OTP resend successfully"
+        otp_expire: 
+          type: string
+          format: date-time
+          example: 2025-09-04T10:15:30Z
+
+    VerifyEmail:
+      type: object
+      properties:
+        msg:
+          type: string
+          example: "Email verified successfully."
+        user:
+          type: object
+          properties:
+            _id:
+              type: object
+              properties:
+                $oid:
+                  type: string
+                  example: "68b8d7763be2f8b63b9a4202"
+            username:
+              type: string
+              example: "Itadmin"
+            email:
+              type: string
+              format: email
+              example: "itadmin@gmail.com"
+            password_hash:
+              type: string
+              description: "Hashed password (scrypt)"
+              example: "scrypt:32768:8:1$JXbflkDEB0BUumCW$b0ebb34a539c0f7a320..."
+            role:
+              type: string
+              enum: [USER, ADMIN]
+              example: "USER"
+            is_verified:
+              type: boolean
+              example: false
+            requires_otp:
+              type: boolean
+              example: false
+            public_ip:
+              type: string
+              example: "0000.000.000"
+            local_ip:
+              type: string
+              example: "Unknown"
+            device_info:
+              type: object
+              properties:
+                browser:
+                  type: string
+                  example: "Mobile Safari 18.6"
+                os:
+                  type: string
+                  example: "iOS 18.6"
+                device:
+                  type: string
+                  example: "iPhone"
+            location:
+              type: object
+              properties:
+                city:
+                  type: string
+                  example: "Phnom Penh"
+                region:
+                  type: string
+                  example: "Phnom Penh"
+                country:
+                  type: string
+                  example: "Cambodia"
+                latitude:
+                  type: number
+                  format: float
+                  example: 11.4483
+                longitude:
+                  type: number
+                  format: float
+                  example: 104.9133
+            created_at:
+              type: object
+              properties:
+                $date:
+                  type: string
+                  format: date-time
+                  example: "2025-09-03T23:04:06.548Z"
+            otp_expire:
+              type: object
+              properties:
+                $date:
+                  type: string
+                  format: date-time
+                  example: "2025-09-04T03:24:14.255Z"
+
+    SEO:
+      type: object
+      properties:
+        page:
+          type: string
+          example: home
+        title:
+          type: string
+          example: CLN | Home
+        description:
+          type: string
+          example: CLN Cambodia provides international and domestic logistics services.
+        keywords:
+          type: string
+          example: CLN Cambodia, logistics, transportation, sea freight, air freight
+        ogTitle:
+          type: string
+          example: CLN Cambodia
+        ogDescription:
+          type: string
+          example: Offering international and domestic logistics services with 20 years of experience.
+        ogImage:
+          type: string
+          example: https://cln-tan.vercel.app/og-home.png
+        url:
+          type: string
+          example: https://cln-tan.vercel.app/home
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: Page not found
+
+paths:
+  /api/v1/auth/signup:
+    post:
+      summary: User sign up
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Signup successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  msg:
+                    type: string
+
+  /api/v1/auth/login:
+    post:
+      summary: User login
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    application/json:
+                      schema:
+                        type: object
+                        properties:
+                          status:
+                            type: boolean
+                          access_token:
+                            type: string
+                          msg:
+                            type: string
+                          requiresOtp:
+                            type: boolean
+                            description: Indicates if OTP verification is required
+                          username:
+                            type: string
+                            description: The logged-in username (for OTP page)
+
+  /api/v1/auth/refresh:
+    post:
+      summary: Refresh access token
+      tags: [Auth]
+      security:
+        - bearerAuth: []   # Requires refresh token
+      responses:
+        '200':
+          description: New access token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+
+  /api/v1/auth/logout:
+    post:
+      summary: Logout user
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+
+  /api/v1/auth/verify-email:
+    post:
+      summary: VerifyEmail OTP
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                otp:
+                  type: string
+      responses:
+        '200':
+          description: Email verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VerifyEmail'
+                
+  /api/v1/auth/verify-otp:
+    post:
+      summary: Login -> Verify OTP
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                otp:
+                  type: string
+      responses:
+        '200':
+          description: OTP verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: boolean
+                  msg:
+                    type: string
+                    example: OTP verified successfully
+                  access_token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  refresh_token:
+                    type: string
+                    example: dGhpc2lzYXJlZnJlc2h0b2tlbg==
+                  user:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                        example: johndoe
+                      email:
+                        type: string
+                        example: johndoe@example.com
+                      role:
+                        type: string
+                        example: user
+
+  /api/v1/auth/resend-otp:
+    post:
+      summary: Resend OTP
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+      responses:
+        '200':
+          description: OTP verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResendOtp'                   
+
+  /api/v1/auth/users:
+    get:
+      summary: Get Users (protected)
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                    username:
+                      type: string
+                    email:
+                      type: string
+                    role:
+                      type: string
+                    is_verified:
+                      type: boolean
+
+  /api/v1/docs/web/request-quote:
+    post:
+      summary: Request a Quote
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                company_name:
+                  type: string
+                full_name:
+                  type: string
+                email:
+                  type: string
+                address:
+                  type: string
+                tel:
+                  type: string
+                job:
+                  type: string
+                origin_destination:
+                  type: string
+                product_name:
+                  type: string
+                weight_dimensions:
+                  type: string
+                service:
+                  type: string
+                container_size:
+                  type: string
+      responses:
+        '200':
+          description: Email verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestQuote'
+
+  /api/v1/docs/web/contact-us:
+    post:
+      summary: Contact Us
+      tags: [Web]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                company_name:
+                  type: string
+                full_name:
+                  type: string
+                email:
+                  type: string
+                address:
+                  type: string
+                tel:
+                  type: string
+                job:
+                  type: string
+                origin_destination:
+                  type: string
+                product_name:
+                  type: string
+                weight_dimensions:
+                  type: string
+                service:
+                  type: string
+                container_size:
+                  type: string
+      responses:
+        '200':
+          description: Email verified
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestQuote'
+
+  /api/v1/docs/seo:
+    post:
+      summary: Create a new SEO entry
+      tags:
+        - SEO
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SEO'
+      responses:
+        '201':
+          description: SEO created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: SEO created
+        '400':
+          description: SEO for this page already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+                
+  /api/v1/docs/seo/{page}:
+    get:
+      summary: Get SEO data for a page
+      tags:
+        - SEO
+      parameters:
+        - in: path
+          name: page
+          schema:
+            type: string
+          required: true
+          description: Page identifier, e.g., "services"
+        - in: query
+          name: tab
+          schema:
+            type: string
+          required: false
+          description: Optional tab or subpage, e.g., "custom" or "land"
+      responses:
+        '200':
+          description: SEO data retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SEO'
+        '404':
+          description: Page not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Update SEO data for a page
+      tags:
+        - SEO
+      parameters:
+        - in: path
+          name: page
+          schema:
+            type: string
+          required: true
+          description: Page identifier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SEO'
+      responses:
+        '200':
+          description: SEO updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: SEO updated
+        '404':
+          description: Page not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      summary: Delete SEO entry for a page
+      tags:
+        - SEO
+      parameters:
+        - in: path
+          name: page
+          schema:
+            type: string
+          required: true
+          description: Page identifier
+      responses:
+        '200':
+          description: SEO deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: SEO deleted
+        '404':
+          description: Page not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
