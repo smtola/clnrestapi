@@ -204,23 +204,6 @@ def login():
             "username": username,
             "status": True
         }), 200
-    else:
-        # If requires_otp is True, proceed with login (OTP already handled or not needed)
-        access_token = create_access_token(
-            identity=str(user_doc["_id"]),
-            additional_claims={"role": user_doc.get("role", "user")}
-        )
-        refresh_token = create_refresh_token(identity=str(user_doc["_id"]))
-
-        resp = jsonify({
-            "msg": "Login successful",
-            "access_token": access_token,
-            "refresh_token": refresh_token,
-            "user": serialize_user(user_doc),
-            "status": True
-        })
-        set_refresh_cookies(resp, refresh_token)
-        return resp, 200
 
 # ---------------- Refresh Token ----------------
 @auth_bp.route('/refresh', methods=['POST'])
@@ -314,8 +297,14 @@ def verify_otp():
 
     access_token = create_access_token(
         identity=str(user_doc["_id"]),
-        additional_claims={"role": user_doc.get("role", "user")}
+        additional_claims={
+            "username": user_doc.get("username"),
+            "email": user_doc.get("email"),
+            "role": user_doc.get("role"),
+            "isVerify": user_doc.get("is_verified"),
+            }
     )
+
     refresh_token = create_refresh_token(identity=str(user_doc["_id"]))
 
     resp = jsonify({
