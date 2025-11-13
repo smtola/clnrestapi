@@ -3,8 +3,8 @@ import secrets
 from datetime import timedelta
 import warnings
 
-# Generate a random 32-byte (256-bit) hex string
-SECRET_KEY = secrets.token_hex(32)
+# Generate a random  (256-bit) hex string
+SECRET_KEY = secrets.token_hex(64)
 
 # Use a fixed default JWT secret key for development consistency
 # In production, always set JWT_SECRET_KEY as an environment variable
@@ -26,7 +26,13 @@ class Config:
             UserWarning
         )
         _jwt_secret = DEFAULT_JWT_SECRET_KEY
-    JWT_SECRET_KEY = _jwt_secret
+    
+    # Ensure JWT_SECRET_KEY is properly set as a string
+    JWT_SECRET_KEY = str(_jwt_secret) if _jwt_secret else DEFAULT_JWT_SECRET_KEY
+    
+    # JWT Algorithm - explicitly set to HS256 (default, but good to be explicit)
+    JWT_ALGORITHM = 'HS256'
+    
     # JWT Token expiration settings - tokens are reusable until they expire
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)  # Access token valid for 24 hours
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)  # Refresh token valid for 30 days

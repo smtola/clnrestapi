@@ -22,6 +22,10 @@ def create_app():
 
     app.config.from_object(Config)
 
+    # Verify JWT_SECRET_KEY is set
+    if not app.config.get('JWT_SECRET_KEY'):
+        raise ValueError("JWT_SECRET_KEY must be set in configuration")
+
     # ----------------- Extensions -----------------
     mongo.init_app(app)
     jwt.init_app(app)
