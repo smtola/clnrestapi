@@ -377,7 +377,7 @@ components:
           example: Page not found
 
 paths:
-  /api/v1/auth/signup:
+  /api/v1/docs/auth/signup:
     post:
       summary: User sign up
       tags: [Auth]
@@ -400,7 +400,7 @@ paths:
                   msg:
                     type: string
 
-  /api/v1/auth/login:
+  /api/v1/docs/auth/login:
     post:
       summary: User login
       tags: [Auth]
@@ -441,7 +441,7 @@ paths:
                             type: string
                             description: The logged-in username (for OTP page)
 
-  /api/v1/auth/refresh:
+  /api/v1/docs/auth/refresh:
     post:
       summary: Refresh access token
       tags: [Auth]
@@ -458,7 +458,7 @@ paths:
                   access_token:
                     type: string
 
-  /api/v1/auth/logout:
+  /api/v1/docs/auth/logout:
     post:
       summary: Logout user
       tags: [Auth]
@@ -475,7 +475,7 @@ paths:
                   msg:
                     type: string
 
-  /api/v1/auth/verify-email:
+  /api/v1/docs/auth/verify-email:
     post:
       summary: VerifyEmail OTP
       tags: [Auth]
@@ -498,7 +498,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/VerifyEmail'
                 
-  /api/v1/auth/verify-otp:
+  /api/v1/docs/auth/verify-otp:
     post:
       summary: Login -> Verify OTP
       tags: [Auth]
@@ -545,7 +545,7 @@ paths:
                         type: string
                         example: user
 
-  /api/v1/auth/resend-otp:
+  /api/v1/docs/auth/resend-otp:
     post:
       summary: Resend OTP
       tags: [Auth]
@@ -568,7 +568,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResendOtp'                   
 
-  /api/v1/auth/users:
+  /api/v1/docs/auth/users:
     get:
       summary: Get Users (protected)
       tags: [Auth]

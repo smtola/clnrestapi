@@ -41,7 +41,7 @@ def create_app():
     )
 
     # ----------------- Blueprints -----------------
-    app.register_blueprint(auth_bp, url_prefix="/api/v1/auth")
+    app.register_blueprint(auth_bp, url_prefix="/api/v1/docs/auth")
     app.register_blueprint(web_bp, url_prefix="/api/v1/docs/web")
     app.register_blueprint(seo_bp, url_prefix="/api/v1/docs/seo")
     # ----------------- Serve Static Files -----------------
