@@ -1146,6 +1146,27 @@ paths:
                 $ref: '#/components/schemas/ProductErrorResponse'
 
   /api/v1/docs/seo:
+    get:
+      summary: Get all SEO entries
+      description: Retrieve a list of all SEO entries from the database
+      tags:
+        - SEO
+      responses:
+        '200':
+          description: List of SEO entries retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SEO'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    
     post:
       summary: Create a new SEO entry
       tags:
