@@ -4,6 +4,33 @@ from bson.objectid import ObjectId
 
 seo_bp = Blueprint("seo", __name__, url_prefix="/api/seo")
 
+# ✅ Get all SEO entries
+@seo_bp.route("", methods=['GET'])
+def get_all_seo():
+    try:
+        # Fetch all SEO entries from MongoDB
+        seo_cursor = mongo.db.seo.find({})
+        
+        # Convert cursor to list and serialize documents
+        seo_list = []
+        for seo in seo_cursor:
+            seo_dict = {
+                "page": seo.get("page", ""),
+                "title": seo.get("title", ""),
+                "description": seo.get("description", ""),
+                "keywords": seo.get("keywords", ""),
+                "ogTitle": seo.get("ogTitle", ""),
+                "ogDescription": seo.get("ogDescription", ""),
+                "ogImage": seo.get("ogImage", ""),
+                "url": seo.get("url", "")
+            }
+            seo_list.append(seo_dict)
+
+        return jsonify(seo_list), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # ✅ Create SEO
 @seo_bp.route("/<page>", methods=["POST"])
 def create_seo():
