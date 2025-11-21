@@ -686,8 +686,6 @@ paths:
       summary: Get all categories
       description: Retrieve a list of all categories (protected endpoint)
       tags: [Web]
-      security:
-        - bearerAuth: []
       responses:
         '200':
           description: List of categories retrieved successfully
@@ -752,8 +750,6 @@ paths:
       summary: Get a category by ID
       description: Retrieve a single category by its ID (protected endpoint)
       tags: [Web]
-      security:
-        - bearerAuth: []
       parameters:
         - in: path
           name: category_id
@@ -892,8 +888,6 @@ paths:
       summary: Get all products
       description: Retrieve a list of all products with optional category filter (protected endpoint)
       tags: [Web]
-      security:
-        - bearerAuth: []
       parameters:
         - in: query
           name: category
@@ -920,8 +914,6 @@ paths:
       summary: Create a new product
       description: Create a new product (protected endpoint)
       tags: [Web]
-      security:
-        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -994,8 +986,6 @@ paths:
       summary: Get a product by ID
       description: Retrieve a single product by its ID (protected endpoint)
       tags: [Web]
-      security:
-        - bearerAuth: []
       parameters:
         - in: path
           name: product_id
@@ -1034,8 +1024,6 @@ paths:
       summary: Update a product
       description: Update an existing product by ID (protected endpoint). All fields are optional.
       tags: [Web]
-      security:
-        - bearerAuth: []
       parameters:
         - in: path
           name: product_id
@@ -1109,8 +1097,6 @@ paths:
       summary: Delete a product
       description: Delete a product by ID (protected endpoint)
       tags: [Web]
-      security:
-        - bearerAuth: []
       parameters:
         - in: path
           name: product_id

@@ -116,7 +116,6 @@ def handle_contact_us():
         return jsonify({"error": False, "error": str(e)}), 500
 
 @web_bp.route('/categories', methods=['GET'])
-@jwt_required()
 def handle_category():
     try:
         # Fetch all categories from MongoDB
@@ -138,7 +137,6 @@ def handle_category():
         return jsonify({"success": False, "error": str(e)}), 500
 
 @web_bp.route('/categories', methods=['POST'])
-@jwt_required()
 def handle_create_category():
     try:
         user_id = get_jwt_identity()  # Extract user from JWT
@@ -175,7 +173,6 @@ def handle_create_category():
         return jsonify({"success": False, "error": str(e)}), 500
 
 @web_bp.route('/categories/<category_id>', methods=['GET'])
-@jwt_required()
 def handle_get_category(category_id):
     try:
         # Validate ObjectId format
@@ -203,7 +200,6 @@ def handle_get_category(category_id):
         return jsonify({"success": False, "error": str(e)}), 500
 
 @web_bp.route('/categories/<category_id>', methods=['PUT'])
-@jwt_required()
 def handle_update_category(category_id):
     try:
         user_id = get_jwt_identity()  # Extract user from JWT
@@ -257,7 +253,6 @@ def handle_update_category(category_id):
         return jsonify({"success": False, "error": str(e)}), 500
 
 @web_bp.route('/categories/<category_id>', methods=['DELETE'])
-@jwt_required()
 def handle_delete_category(category_id):
     try:
         # Validate ObjectId format
@@ -285,7 +280,6 @@ def handle_delete_category(category_id):
 # ==================== PRODUCT ENDPOINTS ====================
 
 @web_bp.route('/products', methods=['GET'])
-@jwt_required()
 def handle_products():
     try:
         # Optional query parameters for filtering
@@ -319,7 +313,6 @@ def handle_products():
         return jsonify({"success": False, "error": str(e)}), 500
 
 @web_bp.route('/products', methods=['POST'])
-@jwt_required()
 def handle_create_product():
     try:
         user_id = get_jwt_identity()  # Extract user from JWT
@@ -382,7 +375,6 @@ def handle_create_product():
         return jsonify({"success": False, "error": str(e)}), 500
 
 @web_bp.route('/products/<product_id>', methods=['GET'])
-@jwt_required()
 def handle_get_product(product_id):
     try:
         # Validate ObjectId format
@@ -414,7 +406,6 @@ def handle_get_product(product_id):
         return jsonify({"success": False, "error": str(e)}), 500
 
 @web_bp.route('/products/<product_id>', methods=['PUT'])
-@jwt_required()
 def handle_update_product(product_id):
     try:
         user_id = get_jwt_identity()  # Extract user from JWT
@@ -500,7 +491,6 @@ def handle_update_product(product_id):
         return jsonify({"success": False, "error": str(e)}), 500
 
 @web_bp.route('/products/<product_id>', methods=['DELETE'])
-@jwt_required()
 def handle_delete_product(product_id):
     try:
         # Validate ObjectId format
