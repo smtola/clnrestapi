@@ -704,8 +704,6 @@ paths:
       summary: Create a new category
       description: Create a new category (protected endpoint)
       tags: [Web]
-      security:
-        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -788,8 +786,6 @@ paths:
       summary: Update a category
       description: Update an existing category by ID (protected endpoint)
       tags: [Web]
-      security:
-        - bearerAuth: []
       parameters:
         - in: path
           name: category_id
@@ -847,8 +843,6 @@ paths:
       summary: Delete a category
       description: Delete a category by ID (protected endpoint)
       tags: [Web]
-      security:
-        - bearerAuth: []
       parameters:
         - in: path
           name: category_id
