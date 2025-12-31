@@ -20,6 +20,7 @@ python-dotenv = "*"
 flask-cors = "*"
 requests = "*"
 user-agents = "*"
+geopy = "*"
 
 [dev-packages]
 

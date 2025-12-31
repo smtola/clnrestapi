@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from app.extensions import mongo
 from bson.objectid import ObjectId
 
-seo_bp = Blueprint("seo", __name__, url_prefix="/api/seo")
+seo_bp = Blueprint("seo", __name__)
 
 # ✅ Get all SEO entries
 @seo_bp.route("", methods=['GET'])

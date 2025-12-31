@@ -5,6 +5,7 @@ from .extensions import mongo, jwt, swagger
 from .routes.auth import auth_bp
 from .routes.web import web_bp
 from .routes.seo import seo_bp
+from .routes.price import price_bp
 import os
 from flask_apscheduler import APScheduler
 from datetime import datetime, timedelta, timezone
@@ -44,6 +45,7 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix="/api/v1/docs/auth")
     app.register_blueprint(web_bp, url_prefix="/api/v1/docs/web")
     app.register_blueprint(seo_bp, url_prefix="/api/v1/docs/seo")
+    app.register_blueprint(price_bp, url_prefix="/api/v1/price")
     # ----------------- Serve Static Files -----------------
     @app.route('/static/<path:filename>')
     def serve_static(filename):

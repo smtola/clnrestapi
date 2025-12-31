@@ -369,6 +369,343 @@ components:
           type: string
           example: https://cln-tan.vercel.app/home
 
+    QuoteResult:
+      type: object
+      properties:
+        price:
+          type: number
+          example: 1234.56
+        eta:
+          type: string
+          example: "1-2 days"
+        currency:
+          type: string
+          example: "USD"
+        breakdown:
+          type: object
+          example:
+            base_price: 1000
+            weight_cost: 200
+            fuel_surcharge: 20
+            handling_fee: 14
+            subtotal: 1214
+            total: 1234
+
+    QuoteDocument:
+      type: object
+      properties:
+        _id:
+          type: string
+          example: "653f1b8e7a1c2d3f456789ab"
+        origin:
+          type: string
+          example: "Port of Singapore"
+        destination:
+          type: string
+          example: "Port of Shanghai"
+        distance_km:
+          type: number
+          example: 3200
+        chargeable_weight:
+          type: number
+          example: 22000
+        containerMaxWeight:
+          type: number
+          example: 22000
+        containerQuantity:
+          type: integer
+          example: 1
+        containerSize:
+          type: string
+          example: "20' Dry"
+        equipmentType:
+          type: string
+          example: "Dry Van"
+        soc:
+          type: boolean
+          example: false
+        commodity:
+          type: string
+          example: "Electronics"
+        vesselDeparture:
+          type: string
+          example: "Vessel ABC123"
+        departure_date:
+          type: string
+          format: date
+          example: "2025-12-30"
+        shipment_type:
+          type: string
+          example: "parcel"
+        mode:
+          type: string
+          example: "sea"
+        country:
+          type: string
+          example: "KH"
+        quotes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/QuoteResult'
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-12-25T10:00:00Z"
+        converted:
+          type: boolean
+          example: false
+          
+    RateCard:
+      type: object
+      properties:
+        _id:
+          type: string
+        country:
+          type: string
+        mode:
+          type: string
+        local:
+          type: string
+        service:
+          type: string
+        docs:
+          type: number
+        trucking:
+          type: number
+        freight:
+          type: number
+        othc:
+          type: number
+        currency:
+          type: string
+        active:
+          type: boolean
+
+    RateCardInput:
+      type: object
+      required:
+        - country
+        - mode
+        - service
+      properties:
+        country:
+          type: string
+        local:
+          type: string
+        mode:
+          type: string
+        docs:
+          type: number
+        trucking:
+          type: number
+        freight:
+          type: number
+        othc:
+          type: number
+        currency:
+          type: string
+        remark:
+          type: string
+
+    Commodity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier (MongoDB ObjectId)
+          example: "64f8c3a1b3e7a12d34f9c901"
+        name:
+          type: string
+          description: Commodity name
+          example: "Rice"
+        description:
+          type: string
+          description: Optional description
+          example: "High-quality Cambodian rice for export"
+        code:
+          type: string
+          description: HS code or commodity code
+          example: "10061000"
+        created_by:
+          type: string
+          description: User ID who created the commodity
+          example: "user123"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-12-24T10:15:30Z"
+        active:
+          type: boolean
+          example: true
+
+    CommodityResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Commodities fetched successfully!"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Commodity'
+
+    CommoditySingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Commodity fetched successfully!"
+        data:
+          $ref: '#/components/schemas/Commodity'
+
+    CommodityCreateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Commodity created successfully!"
+        data:
+          $ref: '#/components/schemas/Commodity'
+
+    CommodityUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Commodity updated successfully!"
+        data:
+          $ref: '#/components/schemas/Commodity'
+
+    CommodityDeleteResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Commodity deleted successfully!"
+
+    CommodityErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+          example: "Commodity not found"
+
+    Port:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "64bfc8c9f0a5e5c1a0c5d2f1"
+        name:
+          type: string
+          example: "Port of Singapore"
+        code:
+          type: string
+          example: "SGSIN"
+        country:
+          type: string
+          example: "Singapore"
+        city:
+          type: string
+          example: "Singapore"
+        type:
+          type: string
+          description: Type of port (sea, river, airport, unknown)
+          example: "sea"
+        lat:
+          type: number
+          format: float
+          example: 1.264
+        lon:
+          type: number
+          format: float
+          example: 103.820
+
+    PortCreate:
+      type: object
+      required:
+        - name
+        - country
+        - lat
+        - lon
+      properties:
+        name:
+          type: string
+          example: "Port of Singapore"
+        code:
+          type: string
+          example: "SGSIN"
+        country:
+          type: string
+          example: "Singapore"
+        city:
+          type: string
+          example: "Singapore"
+        type:
+          type: string
+          example: "sea"
+        lat:
+          type: number
+          example: 1.264
+        lon:
+          type: number
+          example: 103.820
+
+    PortUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        country:
+          type: string
+        city:
+          type: string
+        type:
+          type: string
+        lat:
+          type: number
+        lon:
+          type: number
+
+    PortResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          $ref: '#/components/schemas/Port'
+
+    SuccessMessage:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Port updated successfully"
+
     Error:
       type: object
       properties:
@@ -1270,3 +1607,558 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  
+  /api/v1/price/health:
+    get:
+      summary: Health check
+      tags: [System]
+      responses:
+        '200':
+          description: API is running
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /api/v1/price/quote:
+    post:
+      summary: Calculate logistics quote
+      tags: [Quote]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - origin
+                - destination
+                - containerMaxWeight
+                - containerQuantity
+                - commodity
+              properties:
+                origin:
+                  type: string
+                  example: "Phnom Penh"
+                destination:
+                  type: string
+                  example: "Siem Reap"
+                containerMaxWeight:
+                  type: number
+                  example: 22000
+                containerQuantity:
+                  type: integer
+                  example: 1
+                containerSize:
+                  type: string
+                  example: "20' Dry"
+                equipmentType:
+                  type: string
+                  example: "Dry Van"
+                soc:
+                  type: boolean
+                  example: false
+                commodity:
+                  type: string
+                  example: "Electronics"
+                vesselDeparture:
+                  type: string
+                  example: "Vessel ABC123"
+                departure_date:
+                  type: string
+                  format: date
+                  example: "2025-12-30"
+                mode:
+                  type: string
+                  example: "sea"
+                country:
+                  type: string
+                  example: "KH"
+                shipment_type:
+                  type: string
+                  example: "parcel"
+      responses:
+        '200':
+          description: Quote calculated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteDocument'
+        '400':
+          description: Validation error
+        '404':
+          description: No rate available
+        '500':
+          description: Server error
+
+  /api/v1/price/quote/{quote_id}:
+    get:
+    summary: Get quote by ID
+    tags: [Quote]
+    parameters:
+      - in: path
+        name: quote_id
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: Quote found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuoteDocument'
+      '404':
+        description: Quote not found
+      '500':
+        description: Server error
+
+  /api/v1/price/quotes/history:
+    get:
+    summary: Get quote history
+    tags: [Quote]
+    parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+          default: 1
+      - in: query
+        name: limit
+        schema:
+          type: integer
+          default: 20
+      - in: query
+        name: origin
+        schema:
+          type: string
+      - in: query
+        name: destination
+        schema:
+          type: string
+      - in: query
+        name: start_date
+        schema:
+          type: string
+          format: date
+      - in: query
+        name: end_date
+        schema:
+          type: string
+          format: date
+    responses:
+      '200':
+        description: Quote history list
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                quotes:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/QuoteDocument'
+                total:
+                  type: integer
+                page:
+                  type: integer
+                pages:
+                  type: integer
+      '500':
+        description: Server error
+
+  /api/v1/price/rate-cards:
+    get:
+      summary: Get active rate cards
+      tags: [Rate Card]
+      responses:
+        '200':
+          description: List of rate cards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RateCard'
+
+    post:
+      summary: Create rate card (Admin)
+      tags: [Rate Card]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateCardInput'
+      responses:
+        '201':
+          description: Rate card created
+
+  /api/v1/price/rate-cards/{card_id}:
+    put:
+      summary: Update rate card (Admin)
+      tags: [Rate Card]
+      parameters:
+        - in: path
+          name: card_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rate card updated
+        '404':
+          description: Rate card not found
+
+    delete:
+      summary: Deactivate rate card (Admin)
+      tags: [Rate Card]
+      parameters:
+        - in: path
+          name: card_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Rate card deactivated
+
+  /api/v1/price/finder_port/search:
+    get:
+      tags: [FinderPort]
+      summary: Search ports worldwide (autocomplete)
+      parameters:
+        - name: q
+          in: query
+          description: Search query (min 2 characters)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of matching ports
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Port'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/price/finder_port:
+    get:
+      tags: [FinderPort]
+      summary: Get all ports
+      responses:
+        '200':
+          description: List of all active ports
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Port'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      tags: [FinderPort]
+      summary: Create a new port
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PortCreate'
+      responses:
+        '201':
+          description: Port created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortResponse'
+        '400':
+          description: Missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/price/finder_port/{port_id}:
+    get:
+      tags: [FinderPort]
+      summary: Get port by ID
+      parameters:
+        - name: port_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Port details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortResponse'
+        '404':
+          description: Port not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      tags: [FinderPort]
+      summary: Update port by ID
+      parameters:
+        - name: port_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PortUpdate'
+      responses:
+        '200':
+          description: Port updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '404':
+          description: Port not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    delete:
+      tags: [FinderPort]
+      summary: Delete (soft) port by ID
+      parameters:
+        - name: port_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Port deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '404':
+          description: Port not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/price/commodities:
+    get:
+      summary: Get all commodities
+      tags: [Commodities]
+      responses:
+        '200':
+          description: List of commodities
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityErrorResponse'
+
+    post:
+      summary: Create a new commodity
+      tags: [Commodities]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+              properties:
+                name:
+                  type: string
+                  description: Commodity name
+                  example: "Rice"
+                description:
+                  type: string
+                  description: Optional description
+                  example: "High-quality Cambodian rice"
+                code:
+                  type: string
+                  description: HS code or commodity code
+                  example: "10061000"
+      responses:
+        '201':
+          description: Commodity created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityCreateResponse'
+        '400':
+          description: Bad request - Missing required fields
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityErrorResponse'
+        '409':
+          description: Conflict - Commodity with this name/code already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityErrorResponse'
+
+  /api/v1/price/commodities/{commodity_id}:
+    get:
+      summary: Get a commodity by ID
+      tags: [Commodities]
+      parameters:
+        - in: path
+          name: commodity_id
+          required: true
+          schema:
+            type: string
+          description: MongoDB ObjectId of the commodity
+      responses:
+        '200':
+          description: Commodity fetched successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommoditySingleResponse'
+        '404':
+          description: Commodity not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityErrorResponse'
+
+    put:
+      summary: Update a commodity
+      tags: [Commodities]
+      parameters:
+        - in: path
+          name: commodity_id
+          required: true
+          schema:
+            type: string
+          description: MongoDB ObjectId of the commodity
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Updated commodity name
+                  example: "Rice"
+                description:
+                  type: string
+                  description: Updated description
+                  example: "Premium export rice"
+                code:
+                  type: string
+                  description: Updated HS code
+                  example: "10061000"
+      responses:
+        '200':
+          description: Commodity updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityUpdateResponse'
+        '404':
+          description: Commodity not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityErrorResponse'
+
+    delete:
+      summary: Delete a commodity
+      tags: [Commodities]
+      parameters:
+        - in: path
+          name: commodity_id
+          required: true
+          schema:
+            type: string
+          description: MongoDB ObjectId of the commodity
+      responses:
+        '200':
+          description: Commodity deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityDeleteResponse'
+        '404':
+          description: Commodity not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommodityErrorResponse'

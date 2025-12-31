@@ -12,3 +12,4 @@ flask_cors
 datetime
 flask_apscheduler
 python-dotenv
+geopy
