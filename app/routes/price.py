@@ -66,9 +66,9 @@ def get_chargeable_weight(container_max_weight, container_quantity):
     return container_max_weight * container_quantity
 
 
-def get_rate_card(country, mode, service):
+def get_rate_card(destination, mode, service):
     query = {
-        'country': country,
+        'destination': destination,
         'mode': mode.lower(),
         'service': service,
         'active': True
@@ -137,7 +137,7 @@ def estimate_delivery_time(distance, service, rate_card=None):
 
     return 'N/A'
 
-def generate_quotes(origin, destination, container_max_weight, container_quantity, country, mode):
+def generate_quotes(origin, destination, container_max_weight, container_quantity, mode):
     distance = None
     mode = mode.lower()  # ✅ normalize once
 
@@ -159,7 +159,7 @@ def generate_quotes(origin, destination, container_max_weight, container_quantit
     quotes = {}
 
     for service in services:
-        rate_card = get_rate_card(country, mode, service)
+        rate_card = get_rate_card(destination, mode, service)
         print("RATE CARD:", rate_card)
 
         if not rate_card:
@@ -217,7 +217,6 @@ def create_quote():
             destination=data['destination'],
             container_max_weight=float(data['containerMaxWeight']),
             container_quantity=int(data['containerQuantity']),
-            country=data.get('country', 'Cambodia'),
             mode=data.get('mode', 'Road')
         )
 
@@ -230,7 +229,6 @@ def create_quote():
             'destination': data['destination'],
             'commodity': data['commodity'],
             'mode': data.get('mode', 'Road'),
-            'country': data.get('country', 'Cambodia'),
             'created_at': datetime.utcnow(),
             'converted': False
         }
@@ -497,10 +495,13 @@ def create_rate_card():
     try:
         data = request.json
         
-        required = ['country', 'mode', 'service']
+        required = ['origin', 'destination', 'mode', 'service']
         for field in required:
             if field not in data:
                 return jsonify({'error': f'Missing field: {field}'}), 400
+        
+        if data['origin'] == data['destination']:
+            return jsonify({'error': 'Origin and destination cannot be the same'}), 400
         
         data['active'] = True
         data['created_at'] = datetime.utcnow()

@@ -460,11 +460,11 @@ components:
       properties:
         _id:
           type: string
-        country:
+        origin:
+          type: string
+        destination:
           type: string
         mode:
-          type: string
-        local:
           type: string
         service:
           type: string
@@ -484,13 +484,14 @@ components:
     RateCardInput:
       type: object
       required:
-        - country
+        - origin
+        - destination
         - mode
         - service
       properties:
-        country:
+        origin:
           type: string
-        local:
+        destination:
           type: string
         mode:
           type: string
